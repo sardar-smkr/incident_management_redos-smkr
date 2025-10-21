@@ -7,7 +7,7 @@
   "interface_num": 5,
   "task": {
     "user_id": "401",
-    "instruction": "You are Dwayne Gonzalez, a system administrator. You want to update the primary address for the client 'Rodriguez, Figueroa and Sanchez' to '123 New Avenue, West Derry, NY 10921'. Additionaly, You want to make sure this change is logged for accountability.",
+    "instruction": "You are Dwayne Gonzalez, a system administrator. You want to update the primary address for the client 'Rodriguez, Figueroa and Sanchez' to '123 New Avenue, West Derry, NY 10921'.",
     "actions": [
       
                 {
@@ -187,24 +187,24 @@
                 "from": "instruction",
                 "to": "insert_audit_records",
                 "connection": {
-                    "output": "action,field_name,new_value,reference_type",
-                    "input": "action,field_name,new_value,reference_type"
-                }
-                },
-                {
-                "from": "get_parties",
-                "to": "insert_audit_records",
-                "connection": {
-                    "output": "results[0].client_id,results[0].primary_address",
-                    "input": "reference_id,old_value"
+                    "output": "action,field_name,reference_type",
+                    "input": "action,field_name,reference_type"
                 }
                 },
                 {
                 "from": "process_clients",
                 "to": "insert_audit_records",
                 "connection": {
-                    "output": "results[0].user_id",
-                    "input": "user_id"
+                    "output": "output[0].primary_address",
+                    "input": "new_value"
+                }
+                },
+                {
+                "from": "get_parties",
+                "to": "insert_audit_records",
+                "connection": {
+                    "output": "results[0].client_id,results[0].primary_address,results[0].user_id",
+                    "input": "reference_id,old_value,user_id"
                 }
                 }
                
