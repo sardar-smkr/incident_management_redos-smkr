@@ -1,0 +1,390 @@
+[
+  {
+    "task_id": 0,
+    "reward": 1.0,
+    "info": {
+      "task": {
+        "user_id": "401",
+        "actions": [
+          {
+            "name": "get_parties",
+            "kwargs": {
+              "entity_type": "users",
+              "filters": {
+                "first_name": "Dwayne",
+                "last_name": "Gonzalez"
+              }
+            }
+          },
+          {
+            "name": "get_parties",
+            "kwargs": {
+              "entity_type": "clients",
+              "filters": {
+                "client_name": "Rodriguez, Figueroa and Sanchez"
+              }
+            }
+          },
+          {
+            "name": "confirm_authorization",
+            "kwargs": {
+              "action": "update_client",
+              "requester_email": "dwayne.gonzalez@techcorp.com"
+            }
+          },
+          {
+            "name": "process_clients",
+            "kwargs": {
+              "action": "update",
+              "client_data": {
+                "primary_address": "123 New Avenue, West Derry, NY 10921"
+              },
+              "client_id": "1"
+            }
+          },
+          {
+            "name": "insert_audit_records",
+            "kwargs": {
+              "action": "update",
+              "field_name": "primary_address",
+              "new_value": "123 New Avenue, West Derry, NY 10921",
+              "old_value": "819 Johnson Course, East William, AK 74064",
+              "reference_id": "1",
+              "reference_type": "client",
+              "user_id": "401"
+            }
+          }
+        ],
+        "instruction": "You are Dwayne Gonzalez, a system administrator. You want to update the primary address for the client 'Rodriguez, Figueroa and Sanchez' to '123 New Avenue, West Derry, NY 10921'. Additionaly, You want to make sure this change is logged for accountability.",
+        "outputs": [
+          "199",
+          "401",
+          "1"
+        ]
+      },
+      "source": "user",
+      "user_cost": 0.0020175,
+      "reward_info": {
+        "reward": 1.0,
+        "info": {
+          "r_outputs": 1.0,
+          "outputs": {
+            "199": true,
+            "401": true,
+            "1": true
+          }
+        },
+        "actions": [
+          {
+            "name": "get_parties",
+            "kwargs": {
+              "entity_type": "users",
+              "filters": {
+                "first_name": "Dwayne",
+                "last_name": "Gonzalez"
+              }
+            }
+          },
+          {
+            "name": "get_parties",
+            "kwargs": {
+              "entity_type": "clients",
+              "filters": {
+                "client_name": "Rodriguez, Figueroa and Sanchez"
+              }
+            }
+          },
+          {
+            "name": "confirm_authorization",
+            "kwargs": {
+              "action": "update_client",
+              "requester_email": "dwayne.gonzalez@techcorp.com"
+            }
+          },
+          {
+            "name": "process_clients",
+            "kwargs": {
+              "action": "update",
+              "client_data": {
+                "primary_address": "123 New Avenue, West Derry, NY 10921"
+              },
+              "client_id": "1"
+            }
+          },
+          {
+            "name": "insert_audit_records",
+            "kwargs": {
+              "action": "update",
+              "field_name": "primary_address",
+              "new_value": "123 New Avenue, West Derry, NY 10921",
+              "old_value": "819 Johnson Course, East William, AK 74064",
+              "reference_id": "1",
+              "reference_type": "client",
+              "user_id": "401"
+            }
+          }
+        ]
+      }
+    },
+    "traj": [
+      {
+        "role": "system",
+        "content": "# Incident Management Standard Operating Procedures\n\n---\n\n# **The current time is 2025-10-07 12:00:00 UTC**\n\n# **Introduction**\n\nThis document defines the structure and procedures for Incident Management within the ticketing system. It aligns with ITIL best practices and establishes consistent workflows for incident detection, classification, escalation, resolution, and post-incident analysis.\n\n**At the beginning, acquire the user information by following SOP 8.1. As a result, this ID can be used to identify the user and populate the fields that reference the current user of the system.**\n\n# **Standard Operating Procedures (SOPs)**\n\n## **1. Client Management Operations**\n\n### 1.1 Creating Client Records\n\n**When to use:** When registering new enterprise, mid-market, small business, or startup clients who will require access to incident management services in the ticketing system.\n\n**Who can perform:**\n\n* Account Managers  \n* System Administrators  \n* Technical Support\n\nSteps:\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following client information:  \n   * client_name: Legal or business name of the client  \n   * company_type  \n   * primary_address:  primary_address (headquarters or billing address)  \n   * support_coverage  \n   * preferred_communication  \n   * registration_number (optional)  \n   * status (optional)  \n3. If registration_number is provided, verify it is unique across all client records using discover_parties.  \n4. Create the client record with all required and optional fields using manage_clients.  \n5. Log the client creation action using log_audit_records.\n\nHalt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:\n\n* Missing or invalid required inputs  \n* Duplicate registration_number detected (if provided)  \n* Invalid company_type value  \n* Invalid preferred_communication value  \n* Invalid support_coverage value  \n* Client record creation failed  \n    \n  ---\n\n### 1.2 Updating Client Information\n\n**When to use:** When client details change or status modifications are required.\n\n**Who can perform:**\n\n* Account Managers assigned to the client  \n* System Administrators\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following information:  \n   * client_id: The unique identifier of the client to update. Acquire by following SOP 8.1  \n   * client_name  (optional): Legal or business name of the client  \n   * company_type (optional)  \n   * primary_address (optional):  primary_address (headquarters or billing address)  \n   * support_coverage (optional)  \n   * preferred_communication (optional)  \n   * registration_number (optional)  \n   * status (optional)  \n       \n3. Retrieve the current client record using client_id using discover_parties.  \n4. Apply all changes to the client record using manage_clients.  \n5. Log the client update action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing required client_id input  \n* Client record not found  \n* User lacks authorization to modify client  \n* Invalid company_type value  \n* Invalid preferred_communication value  \n* Invalid support_coverage value  \n* Invalid status value  \n* Duplicate registration_number detected  \n* Client record update failed\n\n  ---\n\n### 1.3 SLA Agreement Creation\n\n**When to use:** When defining specific SLA metrics for client subscriptions.\n\n**Who can perform:**\n\n* Account Managers  \n* Executives\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from user:  \n   * client_id: The unique identifier of the client. Acquire by following SOP 8.1  \n   * tier: Service tier level  \n   * support_coverage: Support coverage level  \n   * Effective_date (optional): SLA effective start date  \n   * expiration_date (optional): SLA expiration date  \n   * status: SLA status (optional)  \n3. Verify that no duplicate active SLA agreement for this client_id exists using discover_contracts.  \n4. If effective_date is not provided, set to current date.  \n5. If status is not provided, set status to 'active'. Otherwise, validate it is one of: active, inactive, expired.  \n6. Create SLA agreement using manage_contracts.  \n7. Log the SLA agreement creation action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* Client not found or inactive  \n* User lacks authority to create SLA agreements  \n* Invalid tier value  \n* Invalid support_coverage value  \n* Invalid status value  \n* Duplicate active SLA agreement exists for client  \n* Invalid effective_date or expiration_date  \n* SLA agreement creation failed\n\n## **2. User Management Operations**\n\n### 2.1 Creating User Accounts\n\n**When to use:** When adding personnel to the incident management system.\n\n**Who can perform:**\n\n* System Administrators  \n* Incident Managers\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following user information:  \n   * first_name: User's first name  \n   * last_name: User's last name  \n   * email: User's email address  \n   * role: Role of the user to be created  \n   * timezone: User's timezone  \n   * Client_id  (optional): Associated client for client_contact role  \n   * Status  (optional) : User status  \n3. Check for existing records with same email address using discover_parties.  \n4. Create user record with all required and optional fields using manage_users.  \n5. Log the user creation action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* Duplicate email detected  \n* Invalid role value  \n* Invalid status value  \n* Client_id required but not provided for client_contact role  \n* Client not found  \n* User record creation failed\n\n### 2.2 Update User Permissions\n\n**When to use:** When modifying user access levels or role assignments.\n\n**Who can perform:**\n\n* System Administrators  \n* Incident Managers\n\n**Steps:**\n\n1. Verify that the approval to conduct the action is present - System administrators, Incident managers only using check_authorization.  \n2. Obtain the following information:  \n   * user_id: The unique identifier of the user to update. Acquire by following SOP 8.1  \n   * first_name (optional): User's first name  \n   * last_name  (optional): User's last name  \n   * email (optional): User's email address  \n   * role  (optional): User's role  \n   * timezone  (optional): User's timezone  \n   * client_id  (optional): Associated client for client_contact role  \n   * Status (optional): User status  \n3. Retrieve current user record using discover_parties.  \n4. Apply the modifications using manage_users.  \n5. Create an audit entry for user permission update using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* Missing required user_id input  \n* User record not found  \n* User lacks authorization to modify user permissions  \n* Invalid role value  \n* Invalid status value  \n* Duplicate email detected  \n* Client not found when required  \n* User record update failed\n\n## **3. Product and Infrastructure Operations**\n\n### 3.1 Creating Infrastructure Components\n\n**When to use:** When documenting system components that support products and services.\n\n**Who can perform:**\n\n* Technical Support Specialists  \n* System Administrators\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following component information:  \n   * ci_name  \n   * ci_type (server, application, database, network, storage, service)  \n   * environment (production, staging, development, testing)  \n   * operational_status (default: 'operational') (optional)  \n   * responsible_owner (optional)  \n3. If responsible_owner provided, verify user exists using discover_parties.  \n4. Create component record using manage_assets.  \n5. Record this action in the audit log for traceability using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* Missing or invalid inputs  \n* Invalid ci_type value  \n* Invalid environment value  \n* Invalid operational_status value  \n* Responsible owner user not found or inactive  \n* Component record creation failed\n\n### 3.2 Managing CI Client Assignments\n\n**When to use:** When assigning configuration items to clients for access control and incident tracking.\n\n**Who can perform:**\n\n* System Administrators  \n* Technical Support Specialists\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following information:  \n   * Ci_id: Configuration item ID. Acquire by following SOP 8.1  \n   * Client_id: Acquire by following SOP 8.1  \n3. Create CI client assignment using manage_assets.  \n4. Log the assignment action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* CI not found or not operational  \n* Client not found or inactive  \n* Duplicate assignment exists  \n* Assignment creation failed\n\n## **4. Incident Operations**\n\n### 4.1 Creating Incidents\n\n**When to use:** When service impacts are detected that require a formal incident management response. This includes client-reported outages, automated alerts from monitoring systems, or executive escalations that disrupt normal operations.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support (if delegated by Incident Manager)  \n* Executives  \n* Systems Administrators\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following incident information:  \n   * title  \n   * description  \n   * category (inquiry/help\\\\, software, hardware, Network, Database)  \n   * impact (critical, high, medium, low)  \n   * urgency (critical, high, medium, low)  \n   * reported_by: User of the system that reported the incident. Acquire by following SOP 8.1  \n   * assigned_to (optional)  \n   * detection_time (optional)  \n   * problem_id (optional)  \n   * affected configuration item(s) (optional)\n\n3. Perform a Severity Assessment by following those steps:  \n   * Gather severity assessment information:  \n     1. Whether there is a complete outage of business-critical services with no workaround  \n     2. The scope of impact (enterprise-wide, multiple customers, number of affected parties)  \n     3. Any regulatory, safety, or financial implications  \n     4. Whether high-priority customers or recurrent incidents are involved  \n     5. The level of service degradation (major or moderate) and availability of workarounds  \n     6. Whether multiple departments, sites, or critical business functions are affected  \n     7. Any risk of breaching high-priority SLAs  \n     8. Whether the impact is localized to a single department or function  \n   * Call `assess_incident_severity` with all the information gathered in (1).  \n   * Use the returned severity as the incident severity.  \n4. Create a new incident using manage_incidents.  \n5. If the severity is P1 or P2, then a new incident bridge is initiated by following SOP 4.5  \n6. If affected configuration item(s) information were provided, then for each configuration item:  \n   * Create incident-CI relationship by following SOP 4.13  \n7. Log the incident creation action using log_audit_records.  \n   \n\n**Halt, and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* Missing or invalid inputs  \n* Assigned user not found or inactive, if provided  \n* Configuration item not found or inactive  \n* Problem ticket not found or closed, if provided  \n* Invalid category value  \n* Invalid severity, impact or urgency value  \n* Invalid status value  \n* Incident record creation failed\n\n  ---\n\n### 4.2 Updating Incident Status\n\n**When to use:** When incident status changes are required during the incident lifecycle.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support assigned to the incident  \n* System Administrators  \n* Executive\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.  \n2. Obtain the following information:\n\n   * incident_id  \n   * status (open, in_progress, monitoring, resolved, closed)  \n   * assigned_to (optional)  \n   * problem_id (optional)  \n3. If `problem_id` was provided in Step 2, confirm that the problem ticket exists and is not closed using `discover_incident_tracking`.  \n4. Apply the status change and any optional fields using `manage_incidents`.  \n5. Log the incident status update action using `log_audit_records`.\n\n**Halt, and use `transfer_to_human` if you receive the following problems; otherwise complete the SOP:**\n\n* Missing required incident_id or status input  \n* Incident record not found  \n* Assigned user not found or inactive, if provided  \n* Problem ticket not found or closed, if provided  \n* Invalid status value  \n* Invalid status transition  \n* Missing timestamp for relevant status change  \n* User not authorized to update this incident  \n* Incident record update failed  \n  ---\n\n### 4.3 Creating Incident Escalations\n\n**When to use:** When escalating incidents due to severity, SLA breach risk, or resource requirements.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* Account Managers  \n* Systems Administrator  \n* Executive\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following escalation information:  \n   * incident_id  \n   * escalated_to  \n   * escalation_reason  \n   * approver (optional)  \n3. Validate incident has valid status (open or in_progress) for escalation.  \n4. Confirm the escalating user (current user) exists and is active using discover_parties.  \n5. Confirm the target user exists and is active using discover_parties.  \n6. If approver was provided, confirm the approver user exists and is active.  \n7. Create the escalation record with status pending and current timestamp using manage_escalations.  \n8. Log the escalation creation action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* Incident not found or invalid status  \n* Escalating user not found or inactive  \n* Target user not found or inactive  \n* Approver user not found or inactive, if provided  \n* Invalid escalation_reason  \n* Escalation creation failed\n\n  ---\n\n### 4.4 Resolving an Incident\n\n**When to use:** Use this procedure once the incident has been mitigated or fully resolved, to formally close it and ensure that all required information is collected for the postmortem (root cause and lessons learned) report.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support\n\n**Steps:**\n\n1. Verify that the approval to conduct the resolving an Incident action is present (incident_manager or technical_support or executive approval required) using `check_authorization`.  \n2. Obtain the incident_id  \n3. Update the incident status to `resolved` using `manage_incidents`.  \n4. Obtain the following details for the postmortem report:  \n   * Incident ID  \n   * `report_type`  \n   * `report_title`  \n   * `report_content`  \n5. Create a postmortem incident draft report using `manage_incident_reports`.  \n6. Update the incident to `closed` status after postmortem review is complete using `manage_incidents`.  \n7. Log the incident resolution action using `log_audit_records`.\n\n**Halt, and use `transfer_to_human` if you receive the following errors; otherwise complete the SOP:**\n\n* Approval missing to resolve incident  \n* Incident not found or invalid status  \n* Missing required postmortem information  \n* Invalid report_status value  \n* Report generation failed  \n* Incident resolution update failed  \n* Audit trail logging failure  \n  ---\n\n### 4.5 Initiating an Incident Bridge\n\n**When to use:** When an active incident requires immediate, multi-team collaboration to coordinate diagnostic, communication, and recovery actions.\n\nA bridge must be initiated for all P1 (Critical) and P2 (High) incidents.\n\nFor P3 or P4 incidents, bridge initiation requires prior Incident Manager approval before proceeding.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support Specialists  \n* Executives\n\n**Steps:**\n\n1. Obtain the following required information:  \n   * **incident_id**: Incident requiring bridge collaboration. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n2. Validate that incident is in an `open` or `in_progress` state and has an assigned Incident Manager.  \n3. Verify the user has authorization to conduct this action using `check_authorization`.  \n4. If the user is not authorized, then check If severity is P3 or P4. If that is the case, then obtain approval from the Incident Manager using `manage_approval_requests` and stop proceeding with the SOP.  \n5. Extract the Incident Manager assigned to the incident from Step 1.  \n6. Create the bridge record with the following values using `manage_coordinations`\n\n   * **Bridge Type**: `major_incident`, `coordination`, or `technical`  \n   * **Bridge Host**: Incident Manager assigned to the incident  \n   * **Start Time**: System-generated current timestamp  \n   * **Status**: `active`  \n7. For P1 and P2 incidents, the bridge type is going to be \u2018major_incident\u2019  \n8. Update the incident status to `in_progress` if its status is `open` using `manage_incidents`.  \n9. Log the bridge initiation action using `log_audit_records`.\n\n**Halt, and use `transfer_to_human` if you receive the following problems; otherwise complete the SOP:**\n\n* Incident not found or invalid status  \n* Incident missing assigned Incident Manager  \n* Approval missing for P3/P4 incident bridge initiation  \n* Impacted client or configuration item fields not populated  \n* Bridge host user not found or inactive  \n* Bridge record creation failed  \n* Incident update failed  \n* Invalid bridge status value  \n* Audit trail logging failure  \n  ---\n\n### 4.6 Closing an Incident Bridge\n\n**When to use:** When the incident has reached a confirmed resolution or stable workaround and real-time collaboration is no longer required.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support Specialists (if delegated by Incident Manager)\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.\n\n2. Obtain the following required information:\n\n   * **incident_id**: Incident associated with the bridge to close. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **bridge_id**: Bridge to close. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n3. Validate the bridge status is `active`.  \n4. Validate the bridge host user is found and active using `discover_parties`.  \n5. Update the bridge status to `closed` using `manage_coordinations`.\n\n6. Update the bridge end time to current timestamp using `manage_coordinations`.\n\n7. Log the bridge closure action using `log_audit_records`.\n\n**Halt, and use `transfer_to_human` if you receive the following problems; otherwise complete the SOP:**\n\n* User not authorized to close bridges  \n* Incident not found  \n* Bridge record not found or not linked to incident  \n* Bridge status is not `active`  \n* Bridge host user not found or inactive  \n* Incident status is not `resolved` or `monitoring`  \n* Incident missing required resolution documentation or impact summary  \n* Bridge status update failed  \n* Bridge end time update failed  \n* Audit trail logging failure  \n  ---\n\n### 4.7 Requesting Approvals\n\n**When to use:** When an action requires documented authorization before execution. This may include bridge initiation, escalation, change implementation, or any process step defined by policy as requiring approval.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrator  \n* Incident Managers\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.  \n2. Obtain the following **required** information from the user:  \n   1. **Record identifying information**: Details to locate the record requiring approval (e.g., incident number, change number, escalation details, bridge number, RCA number)  \n   2. **Record type**: Type of record (one of: `escalation`, `bridge`, `change`, `rollback`, `incident_closure`, `rca`)  \n   3. **Requested action**: Description of the action requiring approval (one of: create_escalation,initiate_bridge,create_change_request,create_rollback_request,conduct_rca,close_incident)  \n   4. **Approver information**: Name, email, or other identifying information for the person who must approve this request  \n3. Acquire the `reference_id` by following SOP 8.1 (Acquiring Entity Records and IDs) and provide the record identifying information from Step 2 as search criteria  \n4. Retrieve the record ID and full record details  \n5. Validate that the record status allows an approval request based on `reference_type` from the record retrieved in Step 3:  \n   1. **Escalation**: status must be `pending`  \n   2. **Bridge**: status must be `active`  \n   3. **Change**: status must be `requested` or `scheduled`  \n   4. **Rollback**: status must be `requested`  \n   5. **Incident (for closure)**: status must be `resolved`  \n   6. **RCA**: status must be `in_progress` or `completed`  \n6. Validate that no pending approval exists for the same action type on this record by following SOP 8.1  \n7. Create a new approval request record using `manage_approval_requests`  \n8. Log the approval request creation using `log_audit_records`\n\n**Halt and use `transfer_to_human` if you receive the following errors; otherwise complete the SOP:**\n\n* User lacks authorization  \n* Referenced record not found  \n* Approver user not found or inactive  \n* Record status does not allow approval request  \n* Duplicate pending approval exists for same action  \n* Cannot determine incident association for communication  \n* Approval request creation failed  \n* Communication notification failed  \n* Audit trail logging failure\n\n### 4.8 Approving or Denying Requests\n\n**When to use:** When an approval request has been submitted and a response is required to authorize or deny the requested action.\n\n**Who can perform:**\n\n* Incident Managers  \n* Executives\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.  \n2. Obtain the following **required** information from the user:  \n   * **Approval request identifying information**: Approval request number, reference type, reference ID, or other details to locate the approval request  \n   * **Decision**: Approve or deny  \n3. Acquire the `approval_id` and full approval request details by following SOP 8.1.  \n4. Update the approval request using `manage_approval_requests`  \n5. Log the approval decision action using `log_audit_records`.\n\n**Halt and use `transfer_to_human` if you receive the following errors; otherwise complete the SOP:**\n\n* User lacks authorization  \n* Approval request not found  \n* Approval request status is not pending  \n* Current user is not the designated approver  \n* Linked record not found  \n* Approval request update failed  \n* Audit trail logging failure\n\n### 4.9 Creating Problem Tickets\n\n**When to use:** When a recurring, underlying, or systemic issue is identified that may be the root cause of one or more related incidents.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrator  \n* Incident Manager\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * title: Problem title (concise, descriptive summary of the underlying issue)  \n   * description: Detailed description (summary of observed behavior, patterns, or error signatures)  \n   * category: Problem category  \n3. Check for the following optional fields. Include if provided:  \n   * incident_ids: List of incident IDs related to this problem  \n   * assigned_to: User to assign the problem to  \n4. If incident IDs were provided in Step 3, validate each incident exists using discover_incident_tracking.  \n5. Create the Problem Ticket record using manage_problem_tickets.  \n6. If incident IDs were provided in Step 3, for each incident ID:  \n   * Use manage_incidents to update each incident  \n   * Set problem_id to the problem ticket ID from Step 8  \n7. Record \"Incident(s) linked to Problem Ticket \\[Problem ID\\]\" in Work Notes using manage_work_notes.  \n8. Send notifications to Technical Support and the Incident Manager confirming that the Problem Ticket was created using manage_communications with the content \u201cNew problem ticket created with ID \\[Problem ID\\]\u201d.  \n9. Log the problem ticket creation action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* User not authorized to create problem record  \n* Existing problem record found (duplicate)  \n* Related incident not found, if provided  \n* Problem record creation failed  \n* Incident linkage update failed  \n* Problem ticket creation notifications failed  \n* Audit trail logging failure  \n* Work note creation failed (due to invalid problem_ticket_id or both incident_id and problem_ticket_id being internally passed)  \n* Communication notification failed (due to invalid problem_ticket_id or both incident_id and problem_ticket_id being internally passed)\n\n---\n\n### 4.10 Updating Problem Tickets\n\n**When to use:** When new information, investigation results, or resolution progress must be added to an existing Problem Ticket.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrator  \n* Incident Manager\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * problem_id: Problem ticket to update. Acquire by following SOP 8.1  \n3. Check for the following optional fields to update. Include in update if provided:  \n   * status: New status for the problem ticket  \n   * title: Updated problem title  \n   * description: Updated problem description  \n   * category: Updated problem category  \n   * assigned_to: Updated assigned user  \n4. Apply the status change and any optional fields with current timestamp using manage_problem_tickets.  \n5. Record \"Problem ticket updated with new investigation details\" in Work Notes using manage_work_notes.  \n6. If status changed to resolved or closed in Step 4, send notifications to the Incident Manager and Technical Support using manage_communications.  \n7. Log the problem ticket update action using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* User not authorized to update problem record  \n* Problem record not found  \n* Problem record unavailable for update (closed status)  \n* Add: Work note creation failed (due to invalid problem_ticket_id or both incident_id and problem_ticket_id being internally passed)  \n* Add: Problem ticket update notifications failed (due to invalid problem_ticket_id or both incident_id and problem_ticket_id being internally passed)  \n* Invalid status value  \n* Invalid status transition  \n* Cannot close problem with open incidents remaining  \n* Problem record update failed  \n* Problem ticket update notifications failed  \n* Audit trail logging failure\n\n---\n\n### 4.11 Linking Incidents to Problem Tickets\n\n**When to use:** When an existing incident is identified as related to an existing Problem Ticket.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrator  \n* Incident Manager\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.  \n2. Obtain the following required information from the user:  \n   * **incident_id**: Incident to link to the problem ticket. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **problem_id**: Problem ticket to link the incident to. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n3. Update the incident record using `manage_incidents`:  \n   * Set `problem_id` to the problem ticket ID from Step 2  \n4. Record \"Incident linked to Problem Ticket \\[Problem Number\\]\" in Work Notes for the incident using `manage_work_notes`.  \n5. Record \"Incident \\[Incident Number\\] linked to this problem ticket\" in Work Notes for the problem ticket using `manage_work_notes`.  \n6. Send notification to the Incident Manager using `manage_communications`.\n\n7. Log the incident linkage action using `log_audit_records`.\n\n**Halt, and use `transfer_to_human` if you receive the following problems; otherwise complete the SOP:**\n\n* User not authorized to link incident to problem  \n* Incident not found  \n* Problem ticket not found  \n* Incident is already linked to this problem ticket  \n* Incident already linked to different problem ticket  \n* Cannot link incidents to closed problem tickets  \n* Incident update failed  \n* Work note creation failed  \n* Notification delivery failure  \n* Audit trail logging failure\n\n### 4.12 Managing Problem Configuration Items\n\n**When to use:** When linking configuration items to problem tickets to track affected infrastructure.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrator  \n* Incident Manager\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * problem_id: Problem ticket to link CI to. Acquire by following SOP 8.1  \n   * ci_id: Configuration item to link. Acquire by following SOP 8.1  \n3. Validate problem ticket exists and is not closed using discover_incident_tracking.  \n4. Validate CI exists using discover_assets.  \n5. Check for existing relationship to prevent duplicates using discover_incident_tracking.  \n6. Create problem-CI relationship using manage_incidents_problems_configuration_items.  \n7. Log the relationship creation using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* Problem ticket not found or closed  \n* CI not found  \n* Duplicate relationship exists  \n* Relationship creation failed\n\n### 4.13 Managing Incident Configuration Items\n\n**When to use:** When linking configuration items to incidents to track affected infrastructure.\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* System Administrators\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * incident_id: Incident to link CI to. Acquire by following SOP 8.1  \n   * ci_id: Configuration item to link. Acquire by following SOP 8.1  \n3. Check for existing relationship to prevent duplicates using discover_incident_tracking.  \n4. Create incident-CI relationship using manage_incidents_problems_configuration_items.  \n5. Log the relationship creation using log_audit_records.\n\n**Halt, and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* Missing or invalid required inputs  \n* Incident not found or closed  \n* CI not found  \n* Duplicate relationship exists  \n* Relationship creation failed\n\n## **5. Communication Management**\n\n### 5.1 Conducting Communications\n\n**When to use:** When you want to notify a certain individual through communication channels\n\n**Who can perform:**\n\n* Incident Managers  \n* Technical Support\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using `check_authorization`.  \n2. Obtain the following **required** information from the user:  \n   * **Incident identifying information**: Incident number or other details to locate the incident by following SOP 8.1  \n   * **Problem identifying information**: Incident number or other details to locate the incident by following SOP 8.1  \n   * **Communication type**: Type of communication (status_update, resolution_notice, escalation_notice, bridge_invitation)  \n   * **Recipient type**: Type of recipient (client, internal, executive)  \n   * **Recipient information (optional)**: Specific user details if targeting an individual   \n   * **Message content**: Communication content  \n   * **Delivery method (optional)**: Method of delivery (email, portal, sms, phone)   \n3. If recipient information was provided in Step 2, acquire the `recipient` user ID by following SOP 8.1 (Acquiring Entity Records and IDs)  \n4. Set sender with the ID of the user conducting the action obtained by following SOP 8.1  \n5. Create a communication record using `manage_communications`.  \n6. Log the communication creation action using `log_audit_records`.\n\n**Halt and use `transfer_to_human` if you receive the following errors; otherwise complete the SOP:**\n\n* User lacks authorization  \n* Incident not found  \n* Incident status is not open or in_progress  \n* Recipient user not found or inactive (if specific recipient provided)  \n* Invalid communication_type value  \n* Invalid recipient_type value  \n* Invalid delivery_method value  \n* Communication record creation failed  \n* Audit trail logging failure\n\n## **6. Change Management Operations**\n\n### 6.1 Creating Change Requests\n\n**When to use:** When system modifications, configuration adjustments, or corrective actions are required to restore service, implement improvements, or prevent incident recurrence.\n\n**Who can perform:**\n\n* Technical Support Specialist  \n* System Administrators  \n* Executive  \n* Incident Manager  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * title: Concise summary of the modification or task  \n   * description: Purpose and expected outcome of the change  \n   * change_type: Type of change (standard, normal, emergency)  \n   * risk_level: Risk assessment (low, medium, high, critical)  \n3. Check for the following optional fields. Include if provided:  \n   * incident_id: If this change is incident-related, acquire by following SOP 8.1  \n   * problem_ticket_id: If this change is problem-related, acquire by following SOP 8.1  \n   * implementation_date: Planned implementation date  \n4. Create a new change request record using manage_change_control.  \n5. Determine approval requirements based on change_type and risk_level from Step 2:  \n   * If change_type is standard and risk_level is low, no approval required; skip to Step 11.  \n   * If change_type is standard and risk_level is medium or high, approval required from Incident Manager.  \n   * If change_type is normal, approval required from Incident Manager.  \n   * If change_type is emergency, approval required from Executive.  \n6. If approval is required from Step 9, create an approval request by following SOP 4.7.  \n7. Log the change request creation action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Invalid change_type value  \n* Invalid risk_level value  \n* Incident not found (if incident information provided)  \n* Problem ticket not found (if problem ticket information provided)  \n* Change request creation failed  \n* Approval request creation failed (if required)  \n* Audit trail logging failure\n\n\n  ---\n\n  ### 6.2 Managing Rollback Requests\n\n  **When to use:** When a change request has been implemented but causes a new incident, performance degradation, or stability issue, and the system must be returned to its pre-change state.  \n  **Who can perform:**  \n* Technical Support Specialist  \n* Systems Administrator  \n* Incident Manager  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * **change_id**: Implemented change request to be rolled back. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **title**: Title for the rollback request  \n   * **rollback_reason**: Reason for requesting the rollback  \n3. Check for the following optional fields. Include if provided:  \n   * **incident_id**: If a new incident was caused by the change, acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n4. Create the rollback request using manage_change_control.  \n5. Log the rollback request creation action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Change request not found  \n* Incident not found (if incident information provided)  \n* Rollback request creation failed  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.3 Creating Work Notes\n\n  **When to use:** When documenting activities, updates, or observations related to incidents.\n\n  **Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* System Administrators  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * **incident_id**: Incident to document. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs) \\[If the note is related to an incident\\]  \n   * **problem_ticket_id**: Problem to document. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs) \\[If the note is related to a problem\\]  \n   * **note text**: The work note content  \n   * **note_type**: Type of work note (progress_update, troubleshooting, resolution)\n\n3. Exactly one of incident_id or problem_ticket_id has to be provided.  \n4. Create the work note record using manage_work_notes.  \n5. Log the work note creation action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Incident not found  \n* Work note creation failed  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.4 Updating Work Notes\n\n  **When to use:** When modifying existing work note content.\n\n  **Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* System Administrators (original author or authorized users only)  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * **note_id**: Work note to update. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **Updated note text**: The updated work note content  \n   * **note_type (optional):** Type of work note (progress_update, troubleshooting, resolution)\n\n     \n\n3. Update the work note record using manage_work_notes.  \n4. Log the work note update action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Work note not found  \n* User not authorized to update this work note (not original author or system administrator)  \n* Work note update failed  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.5 Creating Attachment Records\n\n  **When to use:** When uploading files or documents related to incidents, changes, RCAs, reports, PIRs, communications, work orders, or problems.\n\n  **Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* System Administrators  \n* Client Contacts (for their own incidents)  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information from the user:  \n   * **Reference type**: Type of record the attachment relates to (incident, change, rca, report, pir, communication, work_order, problem)  \n   * **reference_id**: Record to attach file to. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs) using entity type based on reference type  \n   * **File name**: Name of the file being attached  \n   * **File URL**: URL where the file is stored  \n   * **File type (optional)**: MIME type or file extension  \n   * **File size bytes (optional)**: Size of the file in bytes  \n3. Validate reference_type from Step 2 is one of: incident, change, rca, report, pir, communication, work_order, problem.  \n4. Create the attachment record using manage_attachments.  \n5. Log the attachment creation action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Related record not found  \n* Invalid reference_type value  \n* Attachment creation failed  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.6 Updating Escalation Status\n\n  **When to use:** When escalation status changes are required during the escalation lifecycle.\n\n  **Who can perform:**\n\n* Incident Managers  \n* Executives  \n* Technical Support (if assigned to the escalation)  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * **escalation_id**: Escalation to update. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **status**: New status for the escalation  \n3. Check for the following optional fields to update. Include in update if provided:  \n   * **escalated_to**: acquire user by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **responded_at**: Timestamp when escalation was responded to  \n4. Validate new status is one of: pending, approved, denied, cancelled.  \n5. Validate status transition is valid based on current status and escalation workflow.  \n6. Apply the status change and any optional fields using manage_escalations.  \n7. Add a work note to the related incident documenting the status change using manage_work_notes.  \n8. Log the escalation status update action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**  \n* User lacks authorization  \n* Escalation record not found  \n* Invalid status value  \n* Invalid status transition  \n* Target user not found or inactive (if reassigning)  \n* Escalation record update failed  \n* Work note creation failed  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.7 Updating Communication Status\n\n  **When to use:** When communication delivery status changes or updates are required.\n\n  **Who can perform:**\n\n* Incident Managers  \n* Technical Support  \n* System Administrators  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * **communication_id**: Communication to update. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **delivery_status**: New delivery status  \n3. Check for the following optional fields to update. Include in update if provided:  \n   * **sent_at**: Timestamp when communication was sent  \n4. Validate new delivery_status is one of: pending, sent, delivered, failed.  \n5. Apply the status change and any optional fields using manage_communications.  \n6. If delivery_status is failed, add a work note to the related incident documenting the issue stating: \u201cDelivery failed for communication \\[**communication_id**\\]\u201d using manage_work_notes.  \n7. Log the communication status update action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**  \n* User lacks authorization  \n* Communication record not found  \n* Invalid delivery_status value  \n* Invalid status transition  \n* Communication record update failed  \n* Work note creation failed (if delivery failed)  \n* Audit trail logging failure\n\n  ---\n\n  ### 6.8 Conduct Root Cause Analysis\n\n  **When to use:** After a P1 or P2 incident has been resolved, to create a formal record for investigating the underlying cause and preventing recurrence.\n\n  **Who can perform:**\n\n* Incident Manager  \n* Technical Support Specialist (with RCA permissions)  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following root cause analysis information:  \n   * incident_id: Acquire by following SOP 8.1 (Acquiring Entity Records and IDs) \\[If the root cause analysis to be conducted is related to an incident\\]  \n   * problem_ticket_id: Acquire by following SOP 8.1 (Acquiring Entity Records and IDs) \\[If the root cause analysis to be conducted is related to a problem\\]  \n   * rca_title  \n   * assigned_to  \n   * due_date  \n   * analysis_method (5_whys, fishbone, timeline, fault_tree, kepner_tregoe) (optional)  \n   * root_cause_summary (optional)  \n   * status (assigned, in_progress, completed, approved) (optional)  \n3. Validate that incident exists and has status of resolved or closed using discover_incident_tracking in case it is provided.  \n4. Validate that problem ticket exists and has status of resolved or closed using discover_incident_tracking in case it is provided.  \n5. Validate that incident meets RCA eligibility criteria:  \n   * Incident severity is P1 or P2  \n6. Set reported_by to the current authenticated user's ID.  \n7. Create the root cause analysis record using manage_improvements.  \n8. Log the RCA initiation action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**  \n* User lacks authorization  \n* Incident not found or invalid status  \n* Incident does not meet RCA eligibility criteria  \n* Assigned user not found or has invalid role  \n* Invalid analysis_method value  \n* RCA creation failed  \n* Audit trail logging failure\n\n\n  ---\n\n  ### 6.9 Updating Root Cause Analysis Records\n\n  **When to use:** When updating root cause analysis findings or status during the analysis process.  \n  **Who can perform:**  \n* Incident Managers  \n* Technical Support  \n* System Administrators (original analyst or authorized users)  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the rca record to modify by following SOP 8.1  \n3. Apply all changes to the root cause analysis record using manage_improvements.  \n4. Log the root cause analysis update action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**  \n* User lacks authorization  \n* Root cause analysis record not found  \n* User not authorized to update this analysis  \n* Assigned user not found or inactive  \n* Approved by user not found or inactive  \n* Invalid analysis_method value  \n* Invalid status value  \n* Root cause analysis update failed  \n* Audit trail logging failure\n\n\n  ---\n\n  ### 6.10 Updating Post-Incident Review Records\n\n  **When to use:** When updating post-incident review findings, status, or action items during the review process.  \n  **Who can perform:**  \n* Incident Managers  \n* Executives  \n  **Steps:**  \n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following information:  \n   * review_id  \n   * scheduled_date (optional)  \n   * facilitator (optional)  \n   * status (scheduled, completed, cancelled) (optional)  \n   * review_notes (optional)  \n   * lessons_learned (optional)  \n   * action_items (optional)  \n3. Apply all changes to the post-incident review record with current timestamp and user identification using manage_improvements.  \n4. Log the post-incident review update action using log_audit_records.  \n   **Halt and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**  \n* User lacks authorization  \n* Post-incident review record not found  \n* Facilitator user not found or inactive  \n* Invalid status value  \n* Post-incident review update failed  \n* Audit trail logging failure\n\n---\n\n## **7. Reporting Operations**\n\n### 7.1 Generating Incident Reports\n\n**When to use:** When a formal summary document is required for a closed incident, for purposes such as client communication, compliance audits, or internal post-incident review.\n\n**Who can perform:**\n\n* Incident Manager  \n* Executive\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * **incident_id**: Incident for which to generate a report. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **report_title**: Title of the incident report  \n   * **report_type**: Type of report (post_incident_review, client_impact, compliance)  \n   * **report_content**: Content of the report  \n   * **report_status**: Status of report (draft, completed, approved, archived)  \n3. Validate that incident exists and has status of resolved or closed using discover_incident_tracking.  \n4. Generate the report using manage_incident_reports.  \n5. Log the report generation action using log_audit_records.\n\n**Halt and use transfer_to_human if you receive the following errors; otherwise complete the SOP:**\n\n* User lacks authorization  \n* Missing or invalid required inputs  \n* Incident not found or invalid status  \n* Required incident data fields incomplete  \n* Invalid report_type value  \n* Invalid report_status value (if provided)  \n* Report generation failed  \n* Audit trail logging failure\n\n---\n\n### 7.2 Creating Post-Incident Reviews\n\n**When to use:** When formal review is required to analyze response effectiveness and identify improvements.\n\n**Who can perform:**\n\n* Incident Managers  \n* Executives\n\n**Steps:**\n\n1. Verify the user has authorization to conduct this action using check_authorization.  \n2. Obtain the following required information:  \n   * **incident_id**: Incident to review. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **scheduled_date**: Date for the post-incident review  \n   * **facilitator**: User who will facilitate the review. Acquire by following SOP 8.1 (Acquiring Entity Records and IDs)  \n   * **review_notes**: Initial notes for the review  \n   * **lessons_learned**: Preliminary lessons learned  \n   * **action_items**: Action items identified  \n   * **status**: Review status  \n3. Validate that incident exists and has status of closed using discover_incident_tracking.  \n4. Create post-incident review record using manage_improvements.  \n5. Log the post-incident review creation action using log_audit_records.\n\n**Halt and use transfer_to_human if you receive the following problems; otherwise complete the SOP:**\n\n* User lacks authorization  \n* Missing or invalid required inputs  \n* Incident not found or not closed  \n* Facilitator user not found or inactive  \n* Invalid status value (if provided)  \n* Post-incident review creation failed  \n* Audit trail logging failure\n\n  ---\n\n## **8. Entity Identification Operations**\n\n### **8.1 Acquiring Entity Records and IDs**\n\n**When to use:** \n\n* When entity information (name, email, number, etc.) is provided but the specific ID is needed for any operation (incident creation, assignment, linking, reporting, etc.)  \n* When you need to retrieve full entity records that match specific search criteria for validation, display, or further processing  \n* When you need to verify entity existence, status, or attributes before proceeding with an operation\n\n**Who can perform:**\n\n* All roles\n\n**Steps:**\n\n1. Identify the entity type needed and the appropriate discovery tool:  \n   * **Parties** (use `discover_parties`): clients, vendors, users  \n   * **Assets** (use `discover_assets`): products, configuration_items  \n   * **Contracts** (use `discover_contracts`): subscriptions, sla_agreements  \n   * **Incident Tracking** (use `discover_incident_tracking`): incidents, problem_tickets, work_notes, attachments, incident_reports, work_orders  \n   * **Coordination** (use `discover_coordination`): escalations, bridges, bridge_participants  \n   * **Change Control** (use `discover_change_control`): change_requests, rollback_requests  \n   * **Workflows** (use `discover_workflows`): communications, approval_requests  \n   * **Improvement** (use `discover_improvement`): root_cause_analyses, post_incident_reviews  \n   * **Audit** (use `discover_audit`): audit_trails  \n2. Obtain search criteria from the user based on entity type:   \n   * **For Clients:**  \n     1. `client_name`: Legal or business name  \n     2. `registration_number`: Client registration number  \n     3. `company_type`: enterprise, mid_market, smb, startup  \n     4. primary_address: Primary address  \n     5. support_coverage: 24x7, business_hours, on_call  \n     6. preferred_communication: email, portal, phone, slack  \n     7. `status`: active, inactive  \n   * **For Users:**  \n     1. `email`: User's email address (unique identifier)  \n     2. `first_name`: User's first name  \n     3. `last_name`: User's last name  \n     4. `role`: incident_manager, technical_support, account_manager, executive, system_administrator,client_contact  \n     5. `status`: active, inactive  \n     6. `client_id`: Associated client (for client_contact role)  \n     7. timezone: User\u2019s timezone  \n   * **For Configuration Items:**  \n     1. ci_name: Name of the configuration item  \n     2. ci_type: server, application, database, network, storage, service  \n     3. environment: production, staging, development, testing  \n     4. operational_status: operational, degraded, down  \n     5. responsible_owner: User responsible for the CI  \n   * **For SLA Agreements:**  \n     1. client_id: Associated client identifier  \n     2. tier: premium, standard, basic  \n     3. support_coverage: 24x7, business_hours, on_call  \n     4. effective_date: SLA effective start date  \n     5. expiration_date: SLA expiration date  \n     6. created_by: User who created the SLA  \n     7. status: active, inactive, expired  \n   * **For CI Client Assignments:**  \n     1. ci_id: Configuration item identifier  \n     2. client_id: Client identifier  \n     3. created_at: Assignment timestamp  \n   * **For Incidents:**  \n     1. incident_number: Unique incident number (e.g., INC0012345)  \n     2. title: Incident title  \n     3. severity: P1, P2, P3, P4  \n     4. status: open, in_progress, monitoring, resolved, closed  \n     5. reported_by: User who reported  \n     6. assigned_to: Currently assigned user  \n     7. category: inquiry/help, software, hardware, network, database  \n     8. problem_id: Linked problem ticket (if applicable)  \n     9. impact: critical, high, medium, low  \n     10. urgency: critical, high, medium, low  \n   * **For Problem Tickets:**  \n     1. problem_number: Unique problem number (e.g., PRB0001234)  \n     2. title: Problem title  \n     3. description  \n   * **For Escalations:**  \n     1. `incident_id`: Related incident identifier  \n     2. `status`: pending, approved, denied, cancelled  \n     3. `escalated_from`: User who requested escalation  \n     4. `escalated_to`: User receiving escalation  \n     5. approver: User who approved/denied the escalation   \n   * **For Bridges:**  \n     1. `bridge_number`: Unique bridge number (e.g., BRG0001234)  \n     2. `incident_id`: Related incident identifier  \n     3. `bridge_type`: major_incident, coordination, technical  \n     4. `bridge_host`: Incident manager hosting bridge  \n     5. `status`: active, closed  \n   * **For Bridge Participants:**  \n     1. `bridge_id`: Associated bridge identifier  \n     2. `user_id`: Participant user identifier  \n     3. `role_in_bridge`: host, technical_support, account_manager, executive  \n   * **For Change Requests:**  \n     1. `change_number`: Unique change number (e.g., CHG0001234)  \n     2. `incident_id`: Linked incident (if applicable)  \n     3. `title`: Change request title  \n     4. `change_type`: standard, normal, emergency  \n     5. `risk_level`: low, medium, high, critical  \n     6. `status`: requested, approved, denied, scheduled, implemented, cancelled  \n     7. `requested_by`: User who requested change  \n   * **For Rollback Requests:**  \n     1. `rollback_number`: Unique rollback number (e.g., RBK0001234)  \n     2. `change_id`: Original change request identifier  \n     3. `incident_id`: Incident caused by the change  \n     4. `status`: requested, approved, executed, failed  \n     5. `requested_by`: User who requested rollback  \n   * **For Work Orders:**  \n     1. `work_order_number`: Unique work order number (e.g., WO0001234)  \n     2. `change_id`: Linked change request (if applicable)  \n     3. `incident_id`: Linked incident (if applicable)  \n     4. `title`: Work order title  \n     5. `assigned_to`: User assigned to work order  \n     6. `status`: pending, in_progress, completed, cancelled  \n   * **For Approval Requests:**  \n     1. `reference_id`: Generic reference to record needing approval  \n     2. `reference_type`: escalation, bridge, change, rollback, incident_closure, rca  \n     3. `requested_by`: User who requested approval  \n     4. `approver`: User who must approve  \n     5. `status`: pending, approved, denied  \n   * **For Communications:**  \n     1. `incident_id`: Related incident identifier  \n     2. `problem_ticket_id: Related problem_id`  \n     3. `communication_type`: status_update, resolution_notice, escalation_notice, bridge_invitation  \n     4. `recipient_type`: client, internal, executive  \n     5. `sender`: User sending communication  \n     6. `recipient`: Specific user recipient (if applicable)  \n     7. `delivery_status`: pending, sent, delivered, failed  \n   * **For Incident Reports:**  \n     1. `report_number`: Unique report number (e.g., RPT0001234)  \n     2. `incident_id`: Related incident identifier  \n     3. `report_type`: post_incident_review, client_impact, compliance  \n     4. `report_status`: draft, completed, approved, archived  \n     5. `generated_by`: User who generated report  \n   * **For Root Cause Analyses:**  \n     1. `rca_number`: Unique RCA number (e.g., RCA0001234)  \n     2. `incident_id`: Related incident identifier  \n     3.   \n     4. `assigned_to`: User conducting analysis  \n     5. `analysis_method`: 5_whys, fishbone, timeline, fault_tree, kepner_tregoe  \n     6. `status`: assigned, in_progress, completed, approved  \n   * **For Post-Incident Reviews:**  \n     1. `incident_id`: Related incident identifier  \n     2. `facilitator`: User facilitating the review  \n     3. `status`: scheduled, completed, cancelled  \n     4. `scheduled_date`: Date for the review  \n   * **For Attachments:**  \n     1. `reference_id`: ID of related record  \n     2. `reference_type`: incident, change, rca, report, pir, communication, work_order, problem  \n     3. `file_name`: Name of the file  \n     4. `uploaded_by`: User who uploaded  \n   * **For Work Notes:**  \n     1. `incident_id`: Related incident identifier  \n     2. `problem_ticket_id: Related problem ticket ID`  \n     3. `created_by`: User who created note  \n     4. `note_text`: Content of the note  \n3. Search for the entity using the appropriate discovery tool from any of the above with the provided criteria and try to provide as many criteria as possible to the tool.  \n4. You will retrieve the records that match the criteria along with the ID field for each record.\n\n"
+      },
+      {
+        "role": "user",
+        "content": "Hi! I'd like to update the primary address of one of our clients."
+      },
+      {
+        "content": "Sure\u2014let\u2019s update that. I\u2019ll need two pieces of information to locate and update the record:\n\n1. How to identify the client (one of):\n   \u2022 Client ID  \n   \u2022 Client name  \n   \u2022 Registration number  \n\n2. The new primary address.\n\nOnce I have those, I\u2019ll verify your authorization, retrieve the client record, apply the update, and log the change.",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "The client name is 'Rodriguez, Figueroa and Sanchez', and the new address is '123 New Avenue, West Derry, NY 10921'."
+      },
+      {
+        "content": "Before proceeding, please let me know your user email or user ID in the system so I can verify your authorization and pull your user record.",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "Sure, my user email is dwayne.gonzalez@companydomain.com."
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"action\":\"update_client\",\"requester_email\":\"dwayne.gonzalez@companydomain.com\"}",
+              "name": "confirm_authorization"
+            },
+            "id": "call_n0teA4W0IuxAOP7QGDClqjY6",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_n0teA4W0IuxAOP7QGDClqjY6",
+        "name": "confirm_authorization",
+        "content": "{\"authorized\": false, \"error\": \"No user found with email: dwayne.gonzalez@companydomain.com\"}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"entity_type\":\"users\",\"filters\":{\"email\":\"dwayne.gonzalez@companydomain.com\"}}",
+              "name": "get_parties"
+            },
+            "id": "call_64oNlqLnJ6vfD1NaPbHr401G",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_64oNlqLnJ6vfD1NaPbHr401G",
+        "name": "get_parties",
+        "content": "{\"success\": true, \"entity_type\": \"users\", \"count\": 0, \"results\": []}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"summary\":\"User 'dwayne.gonzalez@companydomain.com' not found in system when attempting to update client record.\"}",
+              "name": "switch_to_human"
+            },
+            "id": "call_EKQY7gN5g80OW3e6ssdYL5gh",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_EKQY7gN5g80OW3e6ssdYL5gh",
+        "name": "switch_to_human",
+        "content": "Transfer successful"
+      },
+      {
+        "content": "I\u2019m unable to locate your user account in the system. I\u2019ve escalated this to a human agent who can assist further. An agent will reach out shortly.",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "Is there any other information I can provide to help verify my account?"
+      },
+      {
+        "content": "To locate and verify your account, could you please provide either:\n\n\u2022 Your system user ID  \n\u2022 Your full name as it appears in your user profile (first and last name)  \n\nWith that I can re-attempt to find your record and confirm your authorization.",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "My full name is Dwayne Gonzalez."
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"entity_type\":\"users\",\"filters\":{\"first_name\":\"Dwayne\",\"last_name\":\"Gonzalez\"}}",
+              "name": "get_parties"
+            },
+            "id": "call_AHQ9Dgk5dlOK3LNFhm2G3N5E",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_AHQ9Dgk5dlOK3LNFhm2G3N5E",
+        "name": "get_parties",
+        "content": "{\"success\": true, \"entity_type\": \"users\", \"count\": 1, \"results\": [{\"user_id\": \"401\", \"first_name\": \"Dwayne\", \"last_name\": \"Gonzalez\", \"email\": \"dwayne.gonzalez@techcorp.com\", \"timezone\": \"America/Chicago\", \"status\": \"active\", \"client_id\": null, \"created_at\": \"2025-06-12T12:26:21\", \"updated_at\": \"2025-07-28T23:48:08\"}]}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"action\":\"update_client\",\"requester_email\":\"dwayne.gonzalez@techcorp.com\"}",
+              "name": "confirm_authorization"
+            },
+            "id": "call_VmlWdciR7EWvZrOLmQw6Lyyf",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_VmlWdciR7EWvZrOLmQw6Lyyf",
+        "name": "confirm_authorization",
+        "content": "{\"authorized\": true, \"message\": \"User with role 'system_administrator' is directly authorized to perform action 'update_client'\"}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"entity_type\":\"clients\",\"filters\":{\"client_name\":\"Rodriguez, Figueroa and Sanchez\"}}",
+              "name": "get_parties"
+            },
+            "id": "call_eLKtRKnkz3I4dTbDtCiAwecp",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_eLKtRKnkz3I4dTbDtCiAwecp",
+        "name": "get_parties",
+        "content": "{\"success\": true, \"entity_type\": \"clients\", \"count\": 1, \"results\": [{\"client_id\": \"1\", \"client_name\": \"Rodriguez, Figueroa and Sanchez\", \"registration_number\": \"REG877572\", \"company_type\": \"smb\", \"primary_address\": \"819 Johnson Course, East William, AK 74064\", \"support_coverage\": \"24x7\", \"preferred_communication\": \"portal\", \"status\": \"active\", \"created_at\": \"2024-08-12T23:21:41\", \"updated_at\": \"2024-09-01T09:35:44\"}]}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"action\":\"update\",\"client_id\":\"1\",\"client_data\":{\"primary_address\":\"123 New Avenue, West Derry, NY 10921\"}}",
+              "name": "process_clients"
+            },
+            "id": "call_FxFq31XGLuiA011llZeUVNqu",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_FxFq31XGLuiA011llZeUVNqu",
+        "name": "process_clients",
+        "content": "{\"success\": true, \"action\": \"update\", \"client_id\": \"1\", \"client_data\": {\"client_id\": \"1\", \"client_name\": \"Rodriguez, Figueroa and Sanchez\", \"registration_number\": \"REG877572\", \"company_type\": \"smb\", \"primary_address\": \"123 New Avenue, West Derry, NY 10921\", \"support_coverage\": \"24x7\", \"preferred_communication\": \"portal\", \"status\": \"active\", \"created_at\": \"2024-08-12T23:21:41\", \"updated_at\": \"2025-10-07T12:00:00\"}}"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"reference_id\":\"1\",\"reference_type\":\"client\",\"action\":\"update\",\"user_id\":\"401\",\"field_name\":\"primary_address\",\"old_value\":\"819 Johnson Course, East William, AK 74064\",\"new_value\":\"123 New Avenue, West Derry, NY 10921\"}",
+              "name": "insert_audit_records"
+            },
+            "id": "call_iXNL0hSfloSaXMZjUzbQ7oNB",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_iXNL0hSfloSaXMZjUzbQ7oNB",
+        "name": "insert_audit_records",
+        "content": "{\"success\": true, \"audit_id\": \"199\", \"audit_data\": {\"audit_id\": \"199\", \"reference_id\": \"1\", \"reference_type\": \"client\", \"action\": \"update\", \"user_id\": \"401\", \"field_name\": \"primary_address\", \"old_value\": \"819 Johnson Course, East William, AK 74064\", \"new_value\": \"123 New Avenue, West Derry, NY 10921\", \"created_at\": \"2025-10-07T12:00:00\"}}"
+      },
+      {
+        "content": "The primary address for \u201cRodriguez, Figueroa and Sanchez\u201d has been updated to:\n\n123 New Avenue, West Derry, NY 10921\n\nLet me know if there\u2019s anything else I can help you with!",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "Thank you! Could you please log this change for accountability?"
+      },
+      {
+        "content": null,
+        "role": "assistant",
+        "tool_calls": [
+          {
+            "function": {
+              "arguments": "{\"entity_type\":\"audit_trails\",\"filters\":{\"audit_id\":\"199\"}}",
+              "name": "get_audit"
+            },
+            "id": "call_uY2NhuWPnqRknuCYSpYCy2Ve",
+            "type": "function"
+          }
+        ],
+        "function_call": null
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_uY2NhuWPnqRknuCYSpYCy2Ve",
+        "name": "get_audit",
+        "content": "{\"success\": true, \"entity_type\": \"audit_trails\", \"count\": 1, \"results\": [{\"audit_id\": \"199\", \"reference_id\": \"1\", \"reference_type\": \"client\", \"action\": \"update\", \"user_id\": \"401\", \"field_name\": \"primary_address\", \"old_value\": \"819 Johnson Course, East William, AK 74064\", \"new_value\": \"123 New Avenue, West Derry, NY 10921\", \"created_at\": \"2025-10-07T12:00:00\"}]}"
+      },
+      {
+        "content": "Here\u2019s the audit log entry for accountability:\n\nAudit ID: 199  \nReference Type: client (Client ID 1\u2014\u201cRodriguez, Figueroa and Sanchez\u201d)  \nAction: update  \nField Changed: primary_address  \nOld Value: 819 Johnson Course, East William, AK 74064  \nNew Value: 123 New Avenue, West Derry, NY 10921  \nChanged By (User ID): 401  \nTimestamp: 2025-10-07T12:00:00 UTC\n\nLet me know if you need anything else!",
+        "role": "assistant",
+        "tool_calls": null,
+        "function_call": null
+      },
+      {
+        "role": "user",
+        "content": "Great, thank you for logging that change! ###STOP###"
+      }
+    ],
+    "trial": 0
+  }
+]

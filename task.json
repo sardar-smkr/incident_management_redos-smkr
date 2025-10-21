@@ -1,0 +1,214 @@
+{
+  "env": "incident_management_redos",
+  "model_provider": "openai",
+  "model": "o4-mini",
+  "num_trials": 3,
+  "temperature": 1,
+  "interface_num": 5,
+  "task": {
+    "user_id": "401",
+    "instruction": "You are Dwayne Gonzalez, a system administrator. You want to update the primary address for the client 'Rodriguez, Figueroa and Sanchez' to '123 New Avenue, West Derry, NY 10921'. Additionaly, You want to make sure this change is logged for accountability.",
+    "actions": [
+      
+                {
+                "name": "get_parties",
+                "arguments": {
+                    "entity_type": "users",
+                    "filters": {
+                    "first_name": "Dwayne",
+                    "last_name": "Gonzalez"
+                    }
+                },
+                "output": {
+                    "count": 1,
+                    "entity_type": "users",
+                    "results": [
+                    {
+                        "client_id": null,
+                        "created_at": "2025-06-12T12:26:21",
+                        "email": "dwayne.gonzalez@techcorp.com",
+                        "first_name": "Dwayne",
+                        "last_name": "Gonzalez",
+                        "status": "active",
+                        "timezone": "America/Chicago",
+                        "updated_at": "2025-07-28T23:48:08",
+                        "user_id": "401"
+                    }
+                    ],
+                    "success": true
+                }
+                },
+                {
+                "name": "get_parties",
+                "arguments": {
+                    "entity_type": "clients",
+                    "filters": {
+                    "client_name": "Rodriguez, Figueroa and Sanchez"
+                    }
+                },
+                "output": {
+                    "count": 1,
+                    "entity_type": "clients",
+                    "results": [
+                    {
+                        "client_id": "1",
+                        "client_name": "Rodriguez, Figueroa and Sanchez",
+                        "company_type": "smb",
+                        "created_at": "2024-08-12T23:21:41",
+                        "preferred_communication": "portal",
+                        "primary_address": "819 Johnson Course, East William, AK 74064",
+                        "registration_number": "REG877572",
+                        "status": "active",
+                        "support_coverage": "24x7",
+                        "updated_at": "2024-09-01T09:35:44"
+                    }
+                    ],
+                    "success": true
+                }
+                },
+                {
+                "name": "confirm_authorization",
+                "arguments": {
+                    "action": "update_client",
+                    "requester_email": "dwayne.gonzalez@techcorp.com"
+                },
+                "output": {
+                    "authorized": true,
+                    "message": "User with role 'system_administrator' is directly authorized to perform action 'update_client'"
+                }
+                },
+                {
+                "name": "process_clients",
+                "arguments": {
+                    "action": "update",
+                    "client_data": {
+                    "primary_address": "123 New Avenue, West Derry, NY 10921"
+                    },
+                    "client_id": "1"
+                },
+                "output": {
+                    "action": "update",
+                    "client_data": {
+                    "client_id": "1",
+                    "client_name": "Rodriguez, Figueroa and Sanchez",
+                    "company_type": "smb",
+                    "created_at": "2024-08-12T23:21:41",
+                    "preferred_communication": "portal",
+                    "primary_address": "123 New Avenue, West Derry, NY 10921",
+                    "registration_number": "REG877572",
+                    "status": "active",
+                    "support_coverage": "24x7",
+                    "updated_at": "2025-10-07T12:00:00"
+                    },
+                    "client_id": "1",
+                    "success": true
+                }
+                },
+                {
+                "name": "insert_audit_records",
+                "arguments": {
+                    "action": "update",
+                    "field_name": "primary_address",
+                    "new_value": "123 New Avenue, West Derry, NY 10921",
+                    "old_value": "819 Johnson Course, East William, AK 74064",
+                    "reference_id": "1",
+                    "reference_type": "client",
+                    "user_id": "401"
+                },
+                "output": {
+                    "audit_data": {
+                    "action": "update",
+                    "audit_id": "199",
+                    "created_at": "2025-10-07T12:00:00",
+                    "field_name": "primary_address",
+                    "new_value": "123 New Avenue, West Derry, NY 10921",
+                    "old_value": "819 Johnson Course, East William, AK 74064",
+                    "reference_id": "1",
+                    "reference_type": "client",
+                    "user_id": "401"
+                    },
+                    "audit_id": "199",
+                    "success": true
+                }
+                }
+    ],
+    "outputs": [ 
+        "199",
+        "401",
+        "1"
+                
+      
+    ],
+    "edges": [
+            {
+                "from": "instruction",
+                "to": "get_parties",
+                "connection": {
+                    "output": "entity_type,first_name, last_name,client_name",
+                    "input": "entity_type,first_name, last_name,filters.client_name"
+                }
+                },
+             
+                {
+                "from": "instruction",
+                "to": "confirm_authorization",
+                "connection": {
+                    "output": "action",
+                    "input": "action"
+                }
+                },
+                
+                {
+                "from": "get_parties",
+                "to": "confirm_authorization",
+                "connection": {
+                    "output": "results[0].email",
+                    "input": "requester_email"
+                }
+                },
+                
+                {
+                "from": "instruction",
+                "to": "process_clients",
+                "connection": {
+                    "output": "action, primary_address",
+                    "input": "action, client_data.primary_address"
+                }
+                },
+                {
+                "from": "get_parties",
+                "to": "process_clients",
+                "connection": {
+                    "output": "output[0].client_id",
+                    "input": "client_id"
+                }
+                },
+                 {
+                "from": "instruction",
+                "to": "insert_audit_records",
+                "connection": {
+                    "output": "action,field_name,new_value,reference_type",
+                    "input": "action,field_name,new_value,reference_type"
+                }
+                },
+                {
+                "from": "get_parties",
+                "to": "insert_audit_records",
+                "connection": {
+                    "output": "results[0].client_id,results[0].primary_address",
+                    "input": "reference_id,old_value"
+                }
+                },
+                {
+                "from": "process_clients",
+                "to": "insert_audit_records",
+                "connection": {
+                    "output": "results[0].user_id",
+                    "input": "user_id"
+                }
+                }
+               
+    ],
+    "num_edges": 8
+  }
+}
