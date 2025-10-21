@@ -145,7 +145,7 @@
                 "to": "get_parties",
                 "connection": {
                     "output": "entity_type,first_name, last_name,client_name",
-                    "input": "entity_type,first_name, last_name,filters.client_name"
+                    "input": "entity_type,fitlers.first_name, fitlers.last_name,filters.client_name"
                 }
                 },
              
@@ -195,16 +195,16 @@
                 "from": "process_clients",
                 "to": "insert_audit_records",
                 "connection": {
-                    "output": "output[0].primary_address",
-                    "input": "new_value"
+                    "output": "output[0].primary_address,results[0].client_id",
+                    "input": "new_value,reference_id"
                 }
                 },
                 {
                 "from": "get_parties",
                 "to": "insert_audit_records",
                 "connection": {
-                    "output": "results[0].client_id,results[0].primary_address,results[0].user_id",
-                    "input": "reference_id,old_value,user_id"
+                    "output": "results[0].primary_address,results[0].user_id",
+                    "input": "old_value,user_id"
                 }
                 }
                
@@ -212,3 +212,4 @@
     "num_edges": 8
   }
 }
+
